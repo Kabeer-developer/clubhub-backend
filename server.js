@@ -27,9 +27,20 @@ connectDB();
 const app = express();
 
 // Core middleware
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://clubhub-frontend.vercel.app",
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
     credentials: true,
   })
 );
